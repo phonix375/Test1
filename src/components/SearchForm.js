@@ -17,7 +17,7 @@ const SearchForm = () => {
       return;
     }
 
-    fetch("https://openlibrary.org/search.json?q=" + formInptu)
+    fetch("http://openlibrary.org/search.json?q=" + formInptu)
       .then((data) => data.json())
       .then((response) => {
         let newResult = [];
@@ -33,15 +33,15 @@ const SearchForm = () => {
               ? response.docs[i].author_name
               : "",
             cover: response.docs[i].isbn
-              ? `https://covers.openlibrary.org/b/isbn/${response.docs[i].isbn[0]}-M.jpg?default=false`
+              ? `http://covers.openlibrary.org/b/isbn/${response.docs[i].isbn[0]}-M.jpg?default=false`
               : "",
+              publishYear : response.docs[i].publish_year ? response.docs[i].publish_year.sort().reverse()[0] : 0
           });
         }
         setLoading(false);
         setListOfBooks(newResult);
       })
       .catch((err) => {
-        setLoading(false)
         console.log(err.message);
         alert(err.message);
       });
@@ -51,35 +51,19 @@ const SearchForm = () => {
     let x = [...listOfBooks];
     if (e.target.value === "TitleA-Z") {
       x.sort((a, b) => a.title.localeCompare(b.title));
-      setListOfBooks(x);
     } else if (e.target.value === "TitleZ-A") {
       x.sort((a, b) => b.title.localeCompare(a.title));
-      setListOfBooks(x);
     } else if (e.target.value === "DateA-Z") {
       x.sort((a, b) => {
-        if (a.publishDate.length > 0 && b.publishDate.length > 0) {
-          let d1 = Date.parse(a.publishDate);
-          let d2 = Date.parse(b.publishDate);
-          console.log(`${d1.toISOString()}, ${d2.toISOString()}`);
-          if (d1 > d2) {
-            return 1;
-          } else if (d1 < d2) {
-            return -1;
-          } else {
-            return 0;
-          }
-        } else if (a.publishDate.length > 0) {
-          return 1;
-        } else if (b.publishDate.length > 0) {
-          return -1;
-        } else {
-          return 0;
-        }
+        return b.publishYear - a.publishYear;
       });
-      setListOfBooks(x);
     } else if (e.target.value === "DateZ-A") {
-      console.log("this is the one");
+      x.sort((a, b) => {
+        return a.publishYear - b.publishYear;
+      });
+      
     }
+    setListOfBooks(x);
   };
 
   return (
@@ -111,8 +95,8 @@ const SearchForm = () => {
                   <option value="N/A">Select</option>
                   <option value="TitleA-Z">Title A-Z</option>
                   <option value="TitleZ-A">Title Z-A</option>
-                  <option value="DateA-Z">Realese Date A-Z</option>
-                  <option value="DateZ-A">Realese Date Z-A</option>
+                  <option value="DateA-Z">Realese Year A-Z</option>
+                  <option value="DateZ-A">Realese Year Z-A</option>
                 </select>
                 <div className="select_arrow"></div>
               </>
