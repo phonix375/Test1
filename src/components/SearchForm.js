@@ -17,7 +17,7 @@ const SearchForm = () => {
       return;
     }
 
-    fetch("http://openlibrary.org/search.json?q=" + formInptu)
+    fetch("https://openlibrary.org/search.json?q=" + formInptu)
       .then((data) => data.json())
       .then((response) => {
         let newResult = [];
@@ -33,7 +33,7 @@ const SearchForm = () => {
               ? response.docs[i].author_name
               : "",
             cover: response.docs[i].isbn
-              ? `http://covers.openlibrary.org/b/isbn/${response.docs[i].isbn[0]}-M.jpg?default=false`
+              ? `https://covers.openlibrary.org/b/isbn/${response.docs[i].isbn[0]}-M.jpg?default=false`
               : "",
           });
         }
